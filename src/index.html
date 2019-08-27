@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="cache-control" content="no-cache">
+<!-- <meta http-equiv="expires" content="-1">
+<meta http-equiv="expires" content="Tue, 01 Jan 1980 11:00:00 GMT">
+<meta http-equiv="pragma" content="no-cache"> -->
+
+    <title>Waft Admin App</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"</script>
+    <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"</script> -->
+<!-- <script src="https://unpkg.com/konva@3.4.1/konva.min.js"></script> -->
+
+<script>
+
+function previewFile() {
+    let preview = document.querySelector('img');
+    let file = document.querySelector('input[type=file]').files[0];
+    let reader  = new FileReader();
+//console.log('prevew3');
+    reader.addEventListener("load", function () {
+        preview.src = reader.result;
+        //imageData = preview.src;
+    //console.log('In previewFile3: preview.src=: '+imageData);
+    }, false);
+
+  if (file) {
+      reader.readAsDataURL(file);
+  }
+}
+  </script>
+</head>
+
+<body>
+
+<app-root>loading</app-root>
+
+</body>
+</html>
