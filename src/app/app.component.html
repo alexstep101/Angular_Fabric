@@ -1,0 +1,305 @@
+<!-- Header Title -->
+<div class="container"  style="border: 0px solid blue;text-align: center;padding-bottom: 10px">
+  <div class="row">
+    <div class="col">
+    
+    </div>
+    <div class="col-6">
+       {{ appName }}
+    </div>
+    <div class="col">
+     
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+     
+    </div>
+    <div class="col-6">
+       Prototype for Layout Configuration
+    </div>
+    <div class="col">
+      
+    </div>
+  </div>
+</div>
+<br>
+
+<!-- Get Order Data  -->
+<div class="row" style="margin-left: 25px;">
+    <div class="col text-left" style="border: 1px solid blue;margin-bottom:10px;">
+      <input type="text" class="small" title="Enter an Order #" type="text" name="order-number" id="order-number" placeholder="Order #" #orderId>
+      <span style="margin-left: 20px;">
+        <button data-toggle="tooltip" title="Get Data" type="button" class="btn btn-primary" name="get-order" (click)="getOrderData(orderId.value)">Get Data</button>
+      </span>
+    </div>
+    
+    <div class="col-8 text-center">
+      <div id="image-slider" [ngStyle]="{visibility: showSlider()}">
+          <div id="demo" class="carousel slide" data-interval="false" data-ride="carousel">
+              <!-- Indicators 
+              <ul class="carousel-indicators">
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+                <li data-target="#demo" data-slide-to="1"></li>
+                <li data-target="#demo" data-slide-to="2"></li>
+              </ul> -->
+               <!-- list of images -->
+               <div class="carousel-inner">
+                   <div *ngFor="let item of orderImages" class="carousel-item" [ngClass]="{active: isActive(item.id)}">
+                       <img src="{{item.url}}" alt="{{item.name}}" (click)="addImage2Rectangle($event, true)">
+                       <span class="carousel-caption">{{item.label}}</span>
+                   </div>
+               </div>
+               <!-- Left nav control -->
+              <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+              </a>
+              <!-- Right nav control -->
+              <a class="carousel-control-next" href="#demo" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+              </a>
+          </div>
+      </div>
+    </div>
+    <div class="col">
+      
+    </div>
+</div>
+
+<!-- Button Menu row -->                      
+<div class="row" style="margin-left: 25px; border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+
+<div class="col-xl-12 text-left">
+	<button data-toggle="tooltip" data-placement="bottom" title="Export to S3" type="button" class="btn btn-primary" (click)="sendRequestToServer();">
+		<i class="fa fa-space-shuttle" aria-hidden="true"></i> Export to S3</button>
+	<button data-toggle="tooltip" data-placement="bottom" title="Export to image" type="button" class="btn btn-primary" (click)="confirmClear();">
+		<i class="fa fa-sign-out" aria-hidden="true"></i> Export to SVG</button>
+	<button data-toggle="tooltip" data-placement="bottom" title="Save in localStorage" type="button" class="btn btn-primary"
+		(click)="saveDetailRectData();">
+		<i class="fa fa-save" aria-hidden="true"></i> Save local</button>
+	<button data-toggle="tooltip" data-placement="bottom" title="Load from localStorage" type="button" class="btn btn-primary"
+		(click)="fixRotation();">
+		<i class="fa fa-circle-o-notch" aria-hidden="true"></i> Fix Angle</button>
+	<button data-toggle="tooltip" data-placement="bottom" title="Clean Canvas" type="button" class="btn btn-danger" (click)="confirmClear();">
+		<i class="fa fa-paw" aria-hidden="true"></i> Clean</button>
+</div>
+</div>
+
+<hr>
+
+<!-- Form controls -->
+<div class="container-fluid mx-auto row">
+     <div class="col-md-6" style="border: 1px solid red;">
+        <form>
+          <!-- Image Upload -->   
+          <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">
+                   <label class="btn btn-success">
+                    <i class="fa fa-image"></i>
+                      Add Image<input #htmlImage type="file"  style="display: none;" onchange="previewFile()">
+                   </label>
+                </div>
+                <div class="card-body text-center">
+                   <img height="150" (click)="addImage2Rectangle($event,true)" alt="">
+                </div>
+              </div>
+            <!-- <input #file type="file" accept='image/*' (change)="previewFile($event)"><br>
+             <img [src]="imgUrl" height="200" alt="Image preview..."> -->
+           </div>
+           <div class="col">   
+          
+           <input class="small" title="Enter X" type="text" name="image_x" id="image_x" maxlength="12" size="12" placeholder="X" [ngModel]="imageX"> 
+           <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           <br>
+           <input class="small" title="Enter Y" type="text" name="image_y" id="image_y" maxlength="12" size="12" placeholder="Y" [ngModel]="imageY"> 
+           <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           
+           </div>
+          </div>
+           <!-- Blank row -->                      
+         <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+            <div class="col"></div>
+         </div>
+         <!-- Title and Message $event, item-->                    
+         <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+           <div class="col" style="border-right: 1px solid grey;">
+             <input class="crop" title="Enter a Title" type="text" name="text-title" id="text-title" maxlength="10" size="10" placeholder="Add Title" (input)="readText($event, 'text-title')" value={{textTitle}}>
+             <br>
+            <!-- X Coordinate -->
+             <input class="small" title="Enter X" type="text" name="text-title-x" id="text-title-x" maxlength="12" size="12"  [ngModel]="titleX">
+             <label><span class="small" style="padding-left:10px;"> X Coordinate</span> </label>
+             <br>
+             <!-- Y Coordinate -->
+             <input class="small" title="Enter Y" type="text" name="text-title-y" id="text-title-y" maxlength="12" size="12"  [ngModel]="titleY">
+             <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           </div>
+           <!-- Message -->
+           <div class="col">
+           <textarea name='text' rows="4" cols="25" [ngModel]="message" (input)="readText($event, 'message')"  placeholder="Add Text"></textarea>
+           </div>
+           <div class="col">
+           <!-- X Coordinate -->
+             <input class="small" title="Enter X" type="text" name="text-msg-x" id="text-msg-x" maxlength="12" size="12"  [ngModel]="messageX">
+             <label><span class="small" style="padding-left:10px;"> X Coordinate</span> </label>
+             <br>
+             <!-- Y Coordinate -->
+             <input class="small" title="Enter Y" type="text" name="text-msg-y" id="text-msg-y" maxlength="12" size="12"  [ngModel]="messageY">
+             <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           </div>           
+         </div>
+         <!-- WAFT Word and Initials Code -->                      
+         <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+           <div class="col">
+              <input class="crop" title="WAFT Logo" type="text" name="text-waft" id="text-waft" maxlength="12" size="12" placeholder="WAFT Word" [ngModel]="textWaft">
+              <br>
+             <!-- X Coordinate -->
+             <input class="small" title="Enter X" type="text" name="text-waft-x" id="text-waft-x" maxlength="12" size="12" [ngModel]="waftX">
+             <label><span class="small" style="padding-left:10px;"> X Coordinate</span> </label>
+             <br>
+             <!-- Y Coordinate -->
+             <input class="small" title="Enter Y" type="text" name="text-waft-y" id="text-waft-y" maxlength="12" size="12" [ngModel]="waftY">
+             <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           </div>
+           <!-- Text Orientation -->
+           <div class="col">
+              <input style='font-size: 80%' title="Angle" type="text" name="text-angle" id="text-angle" maxlength="12" size="12" placeholder="Angle Degree" [ngModel]="textAngle">
+             <br>
+              <span id='text-rotate-' style='cursor: pointer; padding-right: 7px; font-size: 25px' (click)="rotateSelected(-1)">-</span> 
+                <label><span class="small">Text Rotation</span> </label>
+                <span id='text-rotate+' style='cursor: pointer; padding-left: 5px; font-size: 20px' (click)="rotateSelected(1)">+</span> <br>
+              <!-- Text Move Horizontal -->               
+              <span id='text-rotate-' style='cursor: pointer; padding-right: 7px; font-size: 25px' (click)="moveSelected('h',-1)">-</span> 
+                <label><span class="small">Text Move Hr</span> </label>
+                <span id='text-rotate+' style='cursor: pointer; padding-left: 5px; font-size: 20px' (click)="moveSelected('h',1)">+</span> 
+                <br>
+               <!-- Text Move Vertical -->               
+              <span id='text-rotate-' style='cursor: pointer; padding-right: 7px; font-size: 25px' (click)="moveSelected('v',-1)">-</span> 
+                <label><span class="small">Text Move Vr</span> </label>
+                <span id='text-rotate+' style='cursor: pointer; padding-left: 5px; font-size: 20px' (click)="moveSelected('v',1)">+</span> 
+           </div>
+           <div class="col">
+             <input class="crop" title="Enter Initials" type="text" name="text-initials" id="text-initials" maxlength="12" size="12" placeholder="Initials Code" [ngModel]="textInitials">
+             <br>
+             <!-- X Coordinate -->
+             <input class="small" title="Enter X" type="text" name="text-initials-x" id="text-initials-x" maxlength="12" size="12" [ngModel]="initialsX">
+             <label><span class="small" style="padding-left:10px;"> X Coordinate</span> </label>
+             <br>
+             <!-- Y Coordinate -->
+             <input class="small" title="Enter Y" type="text" name="text-printcode-y" id="text-initials-y" maxlength="12" size="12" [ngModel]="initialsY">
+             <label><span class="small" style="padding-left:10px;"> Y Coordinate</span> </label>
+           </div>
+         </div>
+         <!-- Blank row -->                      
+         <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+         <div class="col"></div>
+        </div>
+        <!-- Paper Color -->    
+        <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+          <!-- <div class="col">
+            <label><span style="padding-right:10px;"> Paper Color:</span> </label>
+            
+             <select (change)="setCanvasBgColor($event.target.value)">
+             <option value="0">--Select--</option>
+               <option *ngFor="let paperColor of paperColors" value={{paperColor.hexColor}}>
+                 {{paperColor.name}}
+              </option>
+              </select>
+             
+          </div> -->
+        </div>
+        <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+             <!-- Font Family -->
+             <div class="col" style="border-right: 1px solid;">
+               <label><span style="padding-right:7px;"> Font Family</span> </label>
+               <select (change)="selectFontFamily($event.target.value)">
+                 <option value="0">--Select--</option>
+                 <option *ngFor="let item of fontFamily" value={{item}}>
+                 {{item}}
+                 </option>
+               </select>              
+             </div>
+             <!-- Font Color -->
+              <div class="col" style="border-right: 1px solid;">
+              <label><span>Font Color</span> </label>
+              <input type="color" (change)="selectFontColor($event.target.value)" value="#000000" style="width:85%;">
+              <!-- Font Size -->   
+             </div>
+              <!-- Text Alignment -->
+              <div class="col">
+                <label><span style="padding-right:7px;"> Text Alignment</span> </label>
+                <select (change)="selectTextAlignment($event.target.value)">
+                  <option value="0">--Select--</option>
+                  <option *ngFor="let item of textAlignment" value={{item}}>
+                  {{item}}
+                  </option>
+                </select>             
+              </div>
+          </div>
+         <!-- Font Size -->
+         <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+            <div class="col">
+              <!-- <label><span style="padding-right:10px;"> Font Size:</span>{{fontSize}}</label> -->
+              <div class="slidecontainer">
+                <input type="range" min="8" max="36" step="2" value="20" class="slider" #ranger (input)="setFontSize(ranger.value)">  
+                <label><span style="padding-right:10px;"> Font Size:</span>{{fontSize}}</label>
+                <!-- <p>Font Size: <span id="demo">{{fontSize}}</span></p> -->
+              </div>
+           </div>  
+        </div>
+      
+        <!-- Blank row -->                      
+        <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+          <div class="col"></div>
+        </div>
+        <div class="row" style="border-bottom: 1px solid grey;padding:10px 0 10px 10px;">
+          <div class="col"><label><span style="padding-right:10px;"> Font Style:</span> </label>
+              <div class="radio">
+                <input autocomplete="off" type="radio" name="radio-font-style" (change)="selectFontStyle($event.target.value)" id="value_1" value="normal" checked="checked"><label for="value_1">&nbsp;Normal</label>
+              </div> 
+               <div class="radio"><input autocomplete="off" type="radio" name="radio-font-style" (change)="selectFontStyle($event.target.value)" id="value_2" value="italic"><label for="value_2">&nbsp;Italic</label></div>
+           </div>
+          <!-- Font Weight -->
+          <div class="col"><label><span style="padding-right:10px;"> Font Weight:</span> </label>
+              <div class="radio">
+                <input autocomplete="off" type="radio" name="radio-font-weight" (change)="selectFontWeight($event.target.value)" id="value_1" value="normal" checked="checked"><label for="value_1">&nbsp;Normal</label>
+              </div> 
+               <div class="radio"><input autocomplete="off" type="radio" name="radio-font-weight" (change)="selectFontWeight($event.target.value)" id="value_2" value="bold"><label for="value_2">&nbsp;Bold</label></div>
+          </div>
+          <!-- Paper Color -->
+          <div class="col">
+            <label><span style="padding-right:10px;"> Paper Color:</span> </label>
+            
+             <select (change)="setCanvasBgColor($event.target.value)">
+             <option value="0">--Select--</option>
+               <option *ngFor="let paperColor of paperColors" value={{paperColor.hexColor}}>
+                 {{paperColor.name}}
+              </option>
+              </select>
+             
+          </div>
+        </div>
+        </form>
+     </div>
+     <!-- Main Canvas LEGAL Paper Size: 8.5 in x 11 in 72 DPI = 612 x 792 pix -->
+     <div class="col-md-6" style="border: 1px solid #AFAFAF;">
+       <canvas id="canvas1" width="612" height="792"></canvas>
+     </div>       
+    
+     <!-- Details Canvas -->
+     <div class="container-fluid mx-auto row">
+       
+       <div class="container-fluid mx-auto row">
+        <div class="col-md-6 overlay" id="canvas-details" [ngStyle]="{'height': HEIGHT + '%'}">
+              <a class="closebtn" (click)="clearDetails()">&times;</a>
+              <canvas id="canvas2" width="595" height="842"></canvas>
+         </div>
+        </div> 
+       
+     </div>
+</div>
+
+
+
+
